@@ -18,15 +18,15 @@ root.title("Youtbe video downloader")
 root.geometry('670x340')
 root.maxsize(670, 340)
 root.minsize(670, 340)
-root.iconbitmap('youtube-downloader.ico')
-
+root.iconbitmap('images/youtube-downloader.ico')
+root.configure(bg='#100E17')
 
 text = tk.Label(root, text="Download Video and Audio from YouTube",
-                font='Helvetica 15 bold')
+                font='Helvetica 15 bold', bg="#100E17", fg="white")
 text.pack()
 
 status = tk.Label(root, text="Status bar", font='Helvetica 10',
-                  relief='sunken', anchor="w")
+                  relief='sunken', anchor="w",bg="#312D3C",fg="white")
 status.pack(side="bottom", fill='x')
 
 # Creating threads
@@ -53,22 +53,35 @@ def download_yt_file():
         image = ImageTk.PhotoImage(image_resize)
         img_label = tk.Label(root, image=image)
         img_label.place(x=10, y=150)
-        title_label = tk.Label(root, text=yt.title)
+        title_label = tk.Label(root, text=yt.title, bg="#100E17", fg="white")
         title_label.place(x=10, y=260)
-        # status['text']=yt.title
+
         lis = []
         stream = yt.streams.filter(progressive=True)
         for i in stream:
             lis.append(i.resolution)  # getting all the resolution.
         lis_tup = tuple(lis)
 
+        combostyle = ttk.Style()
+        combostyle.theme_create('combostyle', parent='alt',
+                                settings={'TCombobox':
+                                          {'configure':
+                                           {'selectbackground': 'black',
+                                            'fieldbackground': 'white',
+                                            'background': 'white'
+                                            }}}
+                                )
+
+        # ATTENTION: this applies the new style 'combostyle' to all ttk.Combobox
+        combostyle.theme_use('combostyle')
         monthchoosen = ttk.Combobox(root, width=27)
         # Adding combobox drop down list
         monthchoosen['values'] = (lis_tup)
         monthchoosen.set("Select preferred resolution")
         monthchoosen.place(x=420, y=160)
-        btn_proceed = ttk.Button(root, text="Proceed", command=threadButtonTwo)
-        btn_proceed.place(x=450, y=200)
+        btn_proceed = tk.Button(
+            root, text="Proceed", command=threadButtonTwo, font='Helvetica 10 bold')
+        btn_proceed.place(x=470, y=200)
 
     else:
         tk.messagebox.showerror("Error Message", "Oops ! URL not Found")
@@ -129,7 +142,8 @@ def download_file():
         tk.messagebox.showerror("Error", "Resolution not selected")
 
 
-text_url = ttk.Label(root, text="URL:", font=('courier', 18, 'bold'))
+text_url = tk.Label(root, text="URL:", font=(
+    'courier', 18, 'bold'), bg="#100E17", fg="white")
 text_url.place(x=110, y=50)
 
 inp_url = tk.StringVar()
@@ -137,7 +151,9 @@ entry = ttk.Entry(root, textvariable=inp_url, width=31, font=('Helvetica', 14))
 entry.focus_force()
 entry.place(x=180, y=50)
 
-download_btn = ttk.Button(root, text="Download", command=threadButtonOne)
-download_btn.place(x=270, y=90)
+download_btn_image = tk.PhotoImage(file="images/down.png")
+download_btn = tk.Button(root, image=download_btn_image,
+                         width=90, height=30, command=threadButtonOne)
+download_btn.place(x=290, y=90)
 
 root.mainloop()
